@@ -2,9 +2,17 @@ lio_sam:
 
   # Topics
   pointCloudTopic: "points_raw"               # Point cloud data
+  
   imuTopic: "imu_raw"                         # IMU data
+  #imu_correct
+
+  #IMU预积分里程计数据的主题，频率与IMU一致。
   odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
+  #？？？
+  
+  #GPS里程计数据的主题。
   gpsTopic: "odometry/gpsz"                   # GPS odometry topic from navsat, see module_navsat.launch file
+  #这个有是odometry/gpsz
 
   # Frames
   lidarFrame: "base_link"
@@ -13,12 +21,15 @@ lio_sam:
   mapFrame: "map"
 
   # GPS Settings
-  useImuHeadingInitialization: true           # if using GPS data, set to "true"
+  useImuHeadingInitialization: false #true           # if using GPS data, set to "true"
   useGpsElevation: false                      # if GPS elevation is bad, set to "false"
+  #GPS数据的协方差阈值，超过该值则不使用GPS数据。
   gpsCovThreshold: 2.0                        # m^2, threshold for using GPS data
+  #与GPS相关的位姿协方差阈值。
   poseCovThreshold: 25.0                      # m^2, threshold for using GPS data
   
   # Export settings
+  #知道这是保存PDF文件的路径，点云PDF文件
   savePCD: false                              # https://github.com/TixiaoShan/LIO-SAM/issues/3
   savePCDDirectory: "/Downloads/LOAM/"        # in your home folder, starts and ends with "/". Warning: the code deletes "LOAM" folder then recreates it. See "mapOptimization" for implementation
 

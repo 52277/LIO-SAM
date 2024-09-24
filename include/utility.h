@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _UTILITY_LIDAR_ODOMETRY_H_
 #define _UTILITY_LIDAR_ODOMETRY_H_
-#define PCL_NO_PRECOMPILE 
+#define PCL_NO_PRECOMPILE
 
 #include <ros/ros.h>
 
@@ -14,8 +14,6 @@
 #include <nav_msgs/Path.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
-
-#include <opencv/cv.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -35,6 +33,8 @@
 #include <tf/transform_listener.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
+
+#include <opencv2/opencv.hpp>
  
 #include <vector>
 #include <cmath>
@@ -153,6 +153,9 @@ public:
 
     ParamServer()
     {
+        //参数的赋值，如果launch文件里有robot_id（前边这个）参数的赋值，就将这个参数赋值给中间的那个robot_id，后边的那个
+        //roboat就会忽略。如果launch文件里没有robot_id（前边这个）参数的定义，则中间这个参数robot_id就用后边那个roboat参数
+        //launch文件里通过<rosparam file="$(find lio_sam)/config/params.yaml" command="load" />来加载参数
         nh.param<std::string>("/robot_id", robot_id, "roboat");
 
         nh.param<std::string>("lio_sam/pointCloudTopic", pointCloudTopic, "points_raw");
