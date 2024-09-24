@@ -92,16 +92,41 @@ public:
     deskewFlag(0)
     {
         subImu        = nh.subscribe<sensor_msgs::Imu>(imuTopic, 2000, &ImageProjection::imuHandler, this, ros::TransportHints().tcpNoDelay());
+        //<sensor_msgs::Imu>表示接受的IMU的消息类型
+        //从imuTopic话题订阅消息
+        //消息队列的大小是2000
+        //&ImageProjection::imuHandler是回调函数
+        //this: 指向当前对象的指针，确保imuHandler在正确的上下文中被调用。
+        //ros::TransportHints().tcpNoDelay(): 这个选项启用TCP无延迟选项，减少数据传输的延迟。--不用管
         subOdom       = nh.subscribe<nav_msgs::Odometry>(odomTopic+"_incremental", 2000, &ImageProjection::odometryHandler, this, ros::TransportHints().tcpNoDelay());
+        //<nav_msgs::Odometry>指定接收的消息类型
+        //这是增量里程计数据的话题名称，使用odomTopic变量加上后缀"_incremental"来指定。
+        //队列长度是2000
+        //回调函数是&ImageProjection::odometryHandler
+        //是一个指向成员函数的指针
+        //this: 指向当前对象的指针，确保odometryHandler在正确的上下文中被调用。
+        //ros::TransportHints().tcpNoDelay(): 这个选项启用TCP无延迟选项，减少数据传输的延迟。
         subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>(pointCloudTopic, 5, &ImageProjection::cloudHandler, this, ros::TransportHints().tcpNoDelay());
+        //订阅的消息类型是<sensor_msgs::PointCloud2>
+        //话题是pointCloudTopic
+        //队列长度是5
+        //回调函数是&ImageProjection::cloudHandler
+        //this
+        //无延迟传输
 
         pubExtractedCloud = nh.advertise<sensor_msgs::PointCloud2> ("lio_sam/deskew/cloud_deskewed", 1);
-        pubLaserCloudInfo = nh.advertise<lio_sam::cloud_info> ("lio_sam/deskew/cloud_info", 1);
+        //发布去畸变的点云,"lio_sam/deskew/cloud_deskewed":topic name; 1:queue_size
+        //话题名称和队列长度
 
-        allocateMemory();
-        resetParameters();
+        pubLaserCloudInfo = nh.advertise<lio_sam::cloud_info> ("lio_sam/deskew/cloud_info", 1);
+        //发布激光点云信息 这里建议看一下自定义的lio_sam::cloud_info的msg文件 里面包含了较多信息
+
+        allocateMemory();//分配内存
+        resetParameters();//重置部分参数
 
         pcl::console::setVerbosityLevel(pcl::console::L_ERROR);
+        ////setVerbosityLevel用于设置控制台输出的信息。
+        //L_ERROR会输出ERROR信息
     }
 
     void allocateMemory()
